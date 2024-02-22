@@ -1,0 +1,49 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mbir-app
+    hostname: mbir-app
+    restart: always
+    depends_on:
+      - db
+  db:
+    image: postgres:14.8
+    container_name: mbir-postgres
+    hostname: mbir-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: mbir-pgadmin4
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - ${PGADMIN_PORTS}
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+  grafana:
+    image: grafana/grafana
+    container_name: mbir-grafana
+    hostname: mbir-grafana
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - ${GRAFANA_PORTS}
+    volumes:
+      - grafana-data:/var/lib/grafana
+volumes:
+  pg-data:
+  pgadmin-data:
+  grafana-data:
