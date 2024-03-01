@@ -1,3 +1,15 @@
+# NAME              Storage Size    Description                       Range
+# smallint          2 bytes         small-range integer               -32768 to +32767
+# integer	        4 bytes	        typical choice for integer	      -2147483648 to +2147483647
+# bigint	        8 bytes	        large-range integer	              -9223372036854775808 to +9223372036854775807
+# decimal	        variable	    user-specified precision, exact	  up to 131072 digits before the decimal point; up to 16383 digits after the decimal point
+# numeric	        variable	    user-specified precision, exact	  up to 131072 digits before the decimal point; up to 16383 digits after the decimal point
+# real	            4 bytes	        variable-precision, inexact	      6 decimal digits precision
+# double precision	8 bytes	        variable-precision, inexact	      15 decimal digits precision
+# smallserial	    2 bytes	        small autoincrementing integer	  1 to 32767
+# serial	        4 bytes	        autoincrementing integer	      1 to 2147483647
+# bigserial	        8 bytes	        large autoincrementing integer	  1 to 9223372036854775807
+
 # modbus format       database format
 #   Signed                SMALLINT
 #   Unsigned              INTEGER
@@ -16,191 +28,344 @@
 #   Double BA DC FE HG    FLOAT
 #   Double HG FE DC BA    FLOAT
 
-ip: 169.254.10.254
-address: 1
-scan rate: 1000
-table: 't20240124_1'
-registers:
-  01 Read Coils: {}
-  02 Read Discrete Inputs:
-    '0':
-      name: DI1_00
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '1':
-      name: DI1_01
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '2':
-      name: DI1_02
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '3':
-      name: DI1_03
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '4':
-      name: DI1_04
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '5':
-      name: DI1_05
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '6':
-      name: DI1_06
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '7':
-      name: DI1_07
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '16':
-      name: DI2_00
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '17':
-      name: DI2_01
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '18':
-      name: DI2_02
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '19':
-      name: DI2_03
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '20':
-      name: DI2_04
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '21':
-      name: DI2_05
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '22':
-      name: DI2_06
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '23':
-      name: DI2_07
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '32':
-      name: DI3_00
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '33':
-      name: DI3_01
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '34':
-      name: DI3_02
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '35':
-      name: DI3_03
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '36':
-      name: DI3_04
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '37':
-      name: DI3_05
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '38':
-      name: DI3_06
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-    '39':
-      name: DI3_07
-      active: true
-      format: Signed
-      type: SMALLINT
-      adjustments:
-  03 Read Holding Registers: {}
-  04 Read Input Registers:
-    '0':
-      name: AI1_0
-      active: true
-      format: Signed
-      type: REAL
-      adjustments:
-    '1':
-      name: AI1_1
-      active: true
-      format: Signed
-      type: REAL
-      adjustments:
-    '2':
-      name: AI1_2
-      active: true
-      format: Signed
-      adjustments:
-    '3':
-      name: AI1_3
-      active: true
-      format: Signed
-      type: REAL
-      adjustments:
-    '4':
-      name: AI1_4
-      active: true
-      format: Signed
-      type: REAL
-      adjustments:
-    '5':
-      name: AI1_5
-      active: true
-      format: Signed
-      type: REAL
-      adjustments:
+# LOG LEVELS:
+# 10: DEBUG
+# 20: INFO
+# 30: WARNING
+# 40: ERROR
+# 50: CRITICAL
+
+log level: 10
+table: 't20240224_1'
+scan rate: 500
+devices:
+  - name: matrix_plc
+    active: true
+    connection:
+      transport: TCP
+      src: 169.254.10.38
+      config:
+        address: 1
+        timeout: 300
+    registers:
+      01 Read Coils: {}
+      02 Read Discrete Inputs: {}
+      03 Read Holding Registers: {}
+      04 Read Input Registers:
+        '1':
+          name: AI1_1
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+            - '/': 2
+        '2':
+          name: AI1_2
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '3':
+          name: AI1_3
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '5':
+          name: AI1_5
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+  - name: rlab_plc
+    active: false
+    connection:
+      transport: TCP
+      src: 169.254.10.254
+      config:
+        address: 1
+        timeout: 300
+    registers:
+      01 Read Coils: {}
+      02 Read Discrete Inputs:
+        '0':
+          name: DI1_00
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '1':
+          name: DI1_01
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '2':
+          name: DI1_02
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '3':
+          name: DI1_03
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '4':
+          name: DI1_04
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '5':
+          name: DI1_05
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '6':
+          name: DI1_06
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '7':
+          name: DI1_07
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '16':
+          name: DI2_00
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '17':
+          name: DI2_01
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '18':
+          name: DI2_02
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '19':
+          name: DI2_03
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '20':
+          name: DI2_04
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '21':
+          name: DI2_05
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '22':
+          name: DI2_06
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '23':
+          name: DI2_07
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '32':
+          name: DI3_00
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '33':
+          name: DI3_01
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '34':
+          name: DI3_02
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '35':
+          name: DI3_03
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '36':
+          name: DI3_04
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '37':
+          name: DI3_05
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '38':
+          name: DI3_06
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '39':
+          name: DI3_07
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '40':
+          name: test
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+      03 Read Holding Registers: {}
+      04 Read Input Registers:
+        '0':
+          name: AI1_0
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '1':
+          name: AI1_1
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '2':
+          name: AI1_2
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '3':
+          name: AI1_3
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '4':
+          name: AI1_4
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '5':
+          name: AI1_5
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+  - name: localhost
+    active: true
+    connection:
+      transport: TCP
+      src: 169.254.10.75
+      config:
+        address: 1
+        timeout: 300
+    registers:
+      01 Read Coils: {}
+      02 Read Discrete Inputs:
+        '0':
+          name: AO_0
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '1':
+          name: AO_1
+          active: true
+          format: Signed
+          type: SMALLINT
+          adjustments:
+        '2':
+          name: AO_2
+          active: true
+          format: Signed
+          type: VARCHAR(6)
+          adjustments:
+            - '0': 'Закрыт'
+            - '1': 'Открыт'
+      03 Read Holding Registers:
+        '0':
+          name: AO_0
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '1':
+          name: AO_1
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '2':
+          name: AO_2
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '3':
+          name: AO_3
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '4':
+          name: AO_4
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '5':
+          name: AO_5
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '6':
+          name: AO_6
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '7':
+          name: AO_7
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '8':
+          name: AO_8
+          active: true
+          format: Signed
+          type: REAL
+          adjustments:
+        '9':
+          name: AO_9
+          active: true
+          format: Float AB CD
+          type: REAL
+          adjustments:
+      04 Read Input Registers: {}

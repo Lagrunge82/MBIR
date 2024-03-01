@@ -21,10 +21,8 @@ class Decoder:
     Decodes binary data using various formats.
     
     """
-    def __init__(self) -> None:
-        pass
-
-    def signed(self, value: List) -> int:
+    @staticmethod
+    def signed(value: List) -> int:
         """
         Decodes signed integer from the given list value.
 
@@ -34,8 +32,9 @@ class Decoder:
         :rtype: int
         """
         return int(value[0]) - 65536 if int(value[0]) > 32767 else int(value[0])
-    
-    def unsigned(self, value: List) -> int:
+
+    @staticmethod
+    def unsigned(value: List) -> int:
         """
         Decodes unsigned integer from the given list value.
 
@@ -45,8 +44,9 @@ class Decoder:
         :rtype: int
         """
         return int(value[0])
-    
-    def hex_ascii(self, value: List) -> str:
+
+    @staticmethod
+    def hex_ascii(value: List) -> str:
         """
         Decodes hexadecimal ASCII string from the given list value.
 
@@ -56,8 +56,9 @@ class Decoder:
         :rtype: str
         """
         return hex(int(value[0]))
-    
-    def binary(self, value: List) -> str:
+
+    @staticmethod
+    def binary(value: List) -> str:
         """
         Decodes binary string from the given list value.
 
@@ -67,8 +68,9 @@ class Decoder:
         :rtype: str
         """
         return ' '.join([format(value[0], '016b')[4*x:4*(x+1)] for x in range(4)])
-    
-    def long_ab_cd(self, value: List) -> int:
+
+    @staticmethod
+    def long_ab_cd(value: List) -> int:
         """
         Decodes 32-bit integer from the given list value in the format AB-CD
         (big-endian).
@@ -78,11 +80,11 @@ class Decoder:
         :return: Decoded data in 32-bit integer format.
         :rtype: int
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Big,
-                                                  wordorder=Endian.Big).decode_32bit_int()
-    
-    def long_cd_ab(self, value: List) -> int:
+        data = {'registers': value, 'byteorder': Endian.BIG, 'wordorder': Endian.BIG}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_32bit_int()
+
+    @staticmethod
+    def long_cd_ab(value: List) -> int:
         """
         Decodes 32-bit integer from the given list value in the format CD-AB
         (little-endian).
@@ -92,11 +94,11 @@ class Decoder:
         :return: Decoded data in 32-bit integer format.
         :rtype: int
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Big,
-                                                  wordorder=Endian.Little).decode_32bit_int()
-    
-    def long_ba_dc(self, value: List) -> int:
+        data = {'registers': value, 'byteorder': Endian.BIG, 'wordorder': Endian.LITTLE}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_32bit_int()
+
+    @staticmethod
+    def long_ba_dc(value: List) -> int:
         """
         Decodes 32-bit integer from the given list value in the format BA-DC
         (little-endian, swapped bytes).
@@ -106,11 +108,11 @@ class Decoder:
         :return: Decoded data in 32-bit integer format.
         :rtype: int
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Little,
-                                                  wordorder=Endian.Big).decode_32bit_int()
-    
-    def long_dc_ba(self, value: List) -> int:
+        data = {'registers': value, 'byteorder': Endian.LITTLE, 'wordorder': Endian.BIG}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_32bit_int()
+
+    @staticmethod
+    def long_dc_ba(value: List) -> int:
         """
         Decodes 32-bit integer from the given list value in the format DC-BA
         (little-endian, swapped words).
@@ -120,11 +122,11 @@ class Decoder:
         :return: Decoded data in 32-bit integer format.
         :rtype: int
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Little,
-                                                  wordorder=Endian.Little).decode_32bit_int()
-    
-    def float_ab_cd(self, value: List) -> float:
+        data = {'registers': value, 'byteorder': Endian.LITTLE, 'wordorder': Endian.LITTLE}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_32bit_int()
+
+    @staticmethod
+    def float_ab_cd(value: List) -> float:
         """
         Decodes 32-bit float from the given list value in the format AB-CD
         (big-endian).
@@ -134,11 +136,11 @@ class Decoder:
         :return: Decoded data in 32-bit float format.
         :rtype: float
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Big,
-                                                  wordorder=Endian.Big).decode_32bit_float()
-    
-    def float_cd_ab(self, value: List) -> float:
+        data = {'registers': value, 'byteorder': Endian.BIG, 'wordorder': Endian.BIG}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_32bit_float()
+
+    @staticmethod
+    def float_cd_ab(value: List) -> float:
         """
         Decodes 32-bit float from the given list value in the format CD-AB
         (little-endian).
@@ -148,11 +150,11 @@ class Decoder:
         :return: Decoded data in 32-bit float format.
         :rtype: float
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Big,
-                                                  wordorder=Endian.Little).decode_32bit_float()
-    
-    def float_ba_dc(self, value: List) -> float:
+        data = {'registers': value, 'byteorder': Endian.BIG, 'wordorder': Endian.LITTLE}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_32bit_float()
+
+    @staticmethod
+    def float_ba_dc(value: List) -> float:
         """
         Decodes 32-bit float from the given list value in the format BA-DC
         (little-endian, swapped bytes).
@@ -162,11 +164,11 @@ class Decoder:
         :return: Decoded data in 32-bit float format.
         :rtype: float
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Little,
-                                                  wordorder=Endian.Big).decode_32bit_float()
-    
-    def float_dc_ba(self, value: List) -> float:
+        data = {'registers': value, 'byteorder': Endian.LITTLE, 'wordorder': Endian.BIG}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_32bit_float()
+
+    @staticmethod
+    def float_dc_ba(value: List) -> float:
         """
         Decodes 32-bit float from the given list value in the format DC-BA
         (little-endian, swapped words).
@@ -176,11 +178,11 @@ class Decoder:
         :return: Decoded data in 32-bit float format.
         :rtype: float
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Little,
-                                                  wordorder=Endian.Little).decode_32bit_float()
-    
-    def double_ab_cd_ef_gh(self, value: List) -> float:
+        data = {'registers': value, 'byteorder': Endian.LITTLE, 'wordorder': Endian.LITTLE}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_32bit_float()
+
+    @staticmethod
+    def double_ab_cd_ef_gh(value: List) -> float:
         """
         Decodes 64-bit float from the given list value in the format AB-CD-EF-GH
         (big-endian).
@@ -190,11 +192,11 @@ class Decoder:
         :return: Decoded data in 64-bit float format.
         :rtype: float
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Big,
-                                                  wordorder=Endian.Big).decode_64bit_float()
-    
-    def double_gh_ef_cd_ab(self, value: List) -> float:
+        data = {'registers': value, 'byteorder': Endian.BIG, 'wordorder': Endian.BIG}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_64bit_float()
+
+    @staticmethod
+    def double_gh_ef_cd_ab(value: List) -> float:
         """
         Decodes 64-bit float from the given list value in the format GH-EF-CD-AB
         (big-endian, swapped bytes).
@@ -204,11 +206,11 @@ class Decoder:
         :return: Decoded data in 64-bit float format.
         :rtype: float
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Big,
-                                                  wordorder=Endian.Little).decode_64bit_float()
-    
-    def double_ba_dc_fe_hg(self, value: List) -> float:
+        data = {'registers': value, 'byteorder': Endian.BIG, 'wordorder': Endian.LITTLE}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_64bit_float()
+
+    @staticmethod
+    def double_ba_dc_fe_hg(value: List) -> float:
         """
         Decodes 64-bit float from the given list value in the format BA-DC-FE-HG
         (little-endian, swapped words).
@@ -218,11 +220,11 @@ class Decoder:
         :return: Decoded data in 64-bit float format.
         :rtype: float
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Little,
-                                                  wordorder=Endian.Big).decode_64bit_float()
-    
-    def double_hg_fe_dc_ba(self, value: List) -> float:
+        data = {'registers': value, 'byteorder': Endian.LITTLE, 'wordorder': Endian.BIG}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_64bit_float()
+
+    @staticmethod
+    def double_hg_fe_dc_ba(value: List) -> float:
         """
         Decodes 64-bit float from the given list value in the format HG-FE-DC-BA
         (little-endian, swapped words).
@@ -232,9 +234,8 @@ class Decoder:
         :return: Decoded data in 64-bit float format.
         :rtype: float
         """
-        return BinaryPayloadDecoder.fromRegisters(registers=value,
-                                                  byteorder=Endian.Little,
-                                                  wordorder=Endian.Little).decode_64bit_float()
+        data = {'registers': value, 'byteorder': Endian.LITTLE, 'wordorder': Endian.LITTLE}
+        return BinaryPayloadDecoder.fromRegisters(**data).decode_64bit_float()
 
 class Encoder:
     """
