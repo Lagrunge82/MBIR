@@ -61,7 +61,7 @@ class AsyncPoller:
                 'Double BA DC FE HG': obj.double_ba_dc_fe_hg,
                 'Double HG FE DC BA': obj.double_hg_fe_dc_ba, }
 
-    def __decode(self, raw_value: List, data_format: str, adjustments: List) -> str:
+    def __decode(self, raw_value: List, data_format: str) -> str:
         """
         Decodes a dictionary containing binary data according to the specified data format
         and applies the given adjustments.
@@ -75,8 +75,6 @@ class AsyncPoller:
                             'Float BA DC', 'Float DC BA', 'Double AB CD EF GH',
                             'Double GH EF CD AB', 'Double BA DC FE HG', 'Double HG FE DC BA'.
         :type data_format: str
-        :param adjustments: A list of adjustments to be applied to the decoded value.
-        :type adjustments: List
         :raises ValueError: If the specified data format is not found in the format_dict.
         :raises ValueError: If the raw value is incorrect.
         :return: A string representing the decoded value with the applied adjustments.
@@ -106,8 +104,7 @@ class AsyncPoller:
                         logger.error(f'Length for {register.format} not found in data_len')
                         continue
                     data = {'raw_value': response[start_pos:length + start_pos],
-                            'data_format': register.format,
-                            'adjustments': register.adjustments, }
+                            'data_format': register.format, }
                     formatter = self.__format_dict(Decoder())
                     header.append(self.__column_namer(dev=device, reg=register))
                     value = self.__decode(**data)
@@ -173,10 +170,14 @@ class AsyncPoller:
                 if register.active is False:
                     continue
                 count = self.__data_len.get(register.format)
+                # if `request` is  empty and not initialized:
                 if not request:
+                    # initialize:
                     request = {'address': int(address), 'count': count,
                                'slave': device.connection.config.address}
                 else:
+                    # else it has been already initialized.
+
                     if request['address'] + request['count'] == int(address):
                         request['count'] += count
                     else:

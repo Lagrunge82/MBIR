@@ -14,10 +14,10 @@ class Register(BaseModel):
 
 
 class Registers(BaseModel):
-    DO: Dict[str, Register] = Field(alias='01 Read Coils')
-    DI: Dict[str, Register] = Field(alias='02 Read Discrete Inputs')
-    AO: Dict[str, Register] = Field(alias='03 Read Holding Registers')
-    AI: Dict[str, Register] = Field(alias='04 Read Input Registers')
+    DO: Dict[int, Register] = Field(alias='01 Read Coils')
+    DI: Dict[int, Register] = Field(alias='02 Read Discrete Inputs')
+    AO: Dict[int, Register] = Field(alias='03 Read Holding Registers')
+    AI: Dict[int, Register] = Field(alias='04 Read Input Registers')
 
     @field_validator('DO', mode='before')
     def sort_do(cls, value):
